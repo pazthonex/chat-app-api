@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -23,28 +24,28 @@ class UserController extends Controller
     public function store(Request $request)
     {
         try {
-        response()->json([
-            'message' => 'User created successfully',
-            'user' => $request->all()
-        ], 201);
-        $request->validate([
-            'username' => 'required|unique:users',
-            'password' => 'required|min:6',
-            'name' => 'nullable|string',
-            'avatar' => 'nullable|url'
-        ]);
+            response()->json([
+                'message' => 'User created successfully',
+                'user' => $request->all()
+            ], 201);
+            $request->validate([
+                'username' => 'required|unique:users',
+                'password' => 'required|min:6',
+                'name' => 'nullable|string',
+                'avatar' => 'nullable|url'
+            ]);
 
-        $user = User::create([
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'name' => $request->name,
-            'avatar' => $request->avatar,
-        ]);
+            $user = User::create([
+                'username' => $request->username,
+                'password' => Hash::make($request->password),
+                'name' => $request->name,
+                'avatar' => $request->avatar,
+            ]);
 
-        return response()->json($user, 201);
-    } catch (ValidationException $e) {
-        return response()->json(['errors' => $e->errors()], 422);
-    }
+            return response()->json($user, 201);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        }
     }
 
     /**
@@ -54,6 +55,27 @@ class UserController extends Controller
     {
         return response()->json($user);
     }
+
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $user = User::where('username', $request->username)->first();
+
+        if ($user && Hash::check($request->password, $user->password)) {
+           return response()->json([
+                'message' => 'Login successful',
+                'user' => $user
+            ]);
+        }
+
+        return response()->json(['message' => 'Account not found'], 403);
+    }
+
 
     /**
      * Update the specified resource in storage.
