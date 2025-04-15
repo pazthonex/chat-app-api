@@ -17,7 +17,7 @@
     </head>
     <body class="antialiased">
             <div>
-                    <h2>Welcome to my First CI/CD</h2>
+                    <h2>Welcome to my First CI/CD v2.0</h2>
             </div>
     </body>
 </html>
