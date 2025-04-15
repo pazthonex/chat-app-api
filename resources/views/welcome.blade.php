@@ -12,7 +12,7 @@
     </head>
     <body class="antialiased">
             <div>
-                    <h2>My First CI/CD v2.0</h2>
+                    <h2>My First CI/CD v3.0</h2>
             </div>
     </body>
 </html>
